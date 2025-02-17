@@ -1,5 +1,5 @@
 import pytest
-from src.rotor import Rotor
+from enigma import Rotor
 
 
 def test_rotor_creation():

@@ -1,6 +1,6 @@
 import pytest
 import random
-from src.enigma import Enigma
+from enigma import Enigma
 
 
 def test_encrypt():
