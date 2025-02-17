@@ -1,15 +1,20 @@
 """
-    Enigma implementation
+Enigma implementation
 """
-from rotor import Rotor
-from plugboard import Plugboard
-from reflector import Reflector
+
+from .rotor import Rotor
+from .plugboard import Plugboard
+from .reflector import Reflector
 
 
 class EnigmaKey:
-    def __init__(self, rotors: list[str] = ['I', 'II', 'III'],
-                 indicators: list[int] = [0, 0, 0],
-                 rings: list[int] = [0, 0, 0], connections: str = '') -> None:
+    def __init__(
+        self,
+        rotors: list[str] = ["I", "II", "III"],
+        indicators: list[int] = [0, 0, 0],
+        rings: list[int] = [0, 0, 0],
+        connections: str = "",
+    ) -> None:
 
         self.__rotors: list[str] = rotors
         self.__indicators: list[int] = indicators
@@ -36,20 +41,32 @@ class EnigmaKey:
 
 
 class Enigma:
-    def __init__(self, rotors: list[str], reflector: str, rotor_pos: list[int],
-                 ring_set: list[int], connections: str) -> None:
+    def __init__(
+        self,
+        rotors: list[str],
+        reflector: str,
+        rotor_pos: list[int],
+        ring_set: list[int],
+        connections: str,
+    ) -> None:
 
-        self.left_rotor: Rotor = Rotor.create_rotor(rotors[0], rotor_pos[0], ring_set[0])
-        self.middle_rotor: Rotor = Rotor.create_rotor(rotors[1], rotor_pos[1], ring_set[1])
-        self.right_rotor: Rotor = Rotor.create_rotor(rotors[2], rotor_pos[2], ring_set[2])
+        self.left_rotor: Rotor = Rotor.create_rotor(
+            rotors[0], rotor_pos[0], ring_set[0]
+        )
+        self.middle_rotor: Rotor = Rotor.create_rotor(
+            rotors[1], rotor_pos[1], ring_set[1]
+        )
+        self.right_rotor: Rotor = Rotor.create_rotor(
+            rotors[2], rotor_pos[2], ring_set[2]
+        )
 
         self.reflector: Reflector = Reflector.create_reflector(reflector)
 
         self.plugboard: Plugboard = Plugboard(connections)
 
     @classmethod
-    def create_enigma(cls, key: EnigmaKey) -> 'Enigma':
-        return cls(key.rotors, 'B', key.indicators, key.rings, key.connections)
+    def create_enigma(cls, key: EnigmaKey) -> "Enigma":
+        return cls(key.rotors, "B", key.indicators, key.rings, key.connections)
 
     def rotate(self) -> None:
         if self.middle_rotor.is_at_notch():
@@ -75,30 +92,31 @@ class Enigma:
         c = self.reflector.forward(c)
 
         # rotors - left to right
-        c = self.left_rotor.forward(c)
-        c = self.middle_rotor.forward(c)
-        c = self.right_rotor.forward(c)
+        c = self.left_rotor.backward(c)
+        c = self.middle_rotor.backward(c)
+        c = self.right_rotor.backward(c)
 
         # plugboard - out
         c = self.plugboard.forward(c)
 
+        # print(f"Debug: {c}")
         return c
 
     def __enctrypt_char(self, c: str) -> str:
         if len(c) > 1:
-            raise ValueError('You must pass only one char')
+            raise ValueError("You must pass only one char")
 
-        print(f'encrypting {c}')
+        # print(f'encrypting {c}')
 
-        if 'A' <= c <= 'Z':
-            return chr((self.__encrypt_int(ord(c) - ord('A')) + ord('A')))
-        elif 'a' <= c <= 'z':
-            return chr((self.__encrypt_int(ord(c) - ord('a')) + ord('a')))
+        if "A" <= c <= "Z":
+            return chr((self.__encrypt_int(ord(c) - ord("A")) + ord("A")))
+        elif "a" <= c <= "z":
+            return chr((self.__encrypt_int(ord(c) - ord("a")) + ord("a")))
         else:
             raise ValueError("Character is not a letter")
 
     def __encrypt_str(self, s: str) -> str:
-        return ''.join(self.__enctrypt_char(c) for c in s)
+        return "".join(self.__enctrypt_char(c) for c in s)
 
     def encrypt(self, value: int | str) -> int | str:
         if isinstance(value, int):
@@ -109,18 +127,18 @@ class Enigma:
             else:
                 return self.__encrypt_str(value)
         else:
-            raise TypeError('Unsupported type for encryption')
+            raise TypeError("Unsupported type for encryption")
 
     def __decrypt_int(self, c: int) -> int:
         pass
 
     def __decrypt_char(self, c: str) -> str:
         if len(c) > 1:
-            raise ValueError('You must pass only one char')
+            raise ValueError("You must pass only one char")
         pass
 
     def __decrypt_str(self, s: str) -> str:
-        return ''.join(self.__decrypt_char(c) for c in s)
+        return "".join(self.__decrypt_char(c) for c in s)
 
     def decrypt(self, value: int | str) -> int | str:
         if isinstance(value, int):
@@ -131,4 +149,4 @@ class Enigma:
             else:
                 return self.__decrypt_str(value)
         else:
-            raise TypeError('Unsupported type for decryption')
+            raise TypeError("Unsupported type for decryption")
