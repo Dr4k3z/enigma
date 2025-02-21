@@ -37,14 +37,14 @@ class Rotor:
         Rarely used, as Rotor's are usually constructed using the factory
         method below.
         """
-        self.__name: str = name
+        self._name: str = name
         self.enconding: str = enconding
-        self.__rotor_pos: int = rotor_pos
-        self.__notch_pos: int = notch_pos
-        self.__ring_set: int = ring_set
+        self._rotor_pos: int = rotor_pos
+        self._notch_pos: int = notch_pos
+        self._ring_set: int = ring_set
 
-        self.__fwd_wiring: list[int] = self.decode_wiring(enconding)
-        self.__backwd_wiring: list[int] = self.inverse_wiring(self.__fwd_wiring)
+        self._fwd_wiring: list[int] = self.decode_wiring(enconding)
+        self._backwd_wiring: list[int] = self.inverse_wiring(self._fwd_wiring)
 
     @classmethod
     def create_rotor(cls, name: str, rotor_pos: int, ring_set: int) -> "Rotor":
@@ -56,19 +56,22 @@ class Rotor:
         match name:
             case name if name in ["I", "II", "III", "IV", "V"]:
                 return cls(
-                    name, enconding_dict[name], rotor_pos, notch_dict[name], ring_set
+                    name,
+                    enconding_dict[name],
+                    rotor_pos,
+                    notch_dict[name],
+                    ring_set
                 )
-            case "VI":
-                raise NotImplementedError(
-                    f"Rotor name {name} has not been implemented yet"
-                )
-            case "VII":
-                raise NotImplementedError(
-                    f"Rotor name {name} has not been implemented yet"
-                )
-            case "VIII":
-                raise NotImplementedError(
-                    f"Rotor name {name} has not been implemented yet"
+            case name if name in ["VI", "VII", "VIII"]:
+                class RotorExtra(Rotor):
+                    def is_at_notch(self) -> bool:
+                        return self._rotor_pos == 12 or self._rotor_pos == 25
+                return RotorExtra(
+                    name,
+                    enconding_dict[name],
+                    rotor_pos,
+                    notch_dict[name],
+                    ring_set
                 )
             case _:
                 return cls(
@@ -82,27 +85,27 @@ class Rotor:
     # getters
     @property
     def name(self) -> str:
-        return self.__name
+        return self._name
 
     @property
     def rotor_pos(self) -> int:
-        return self.__rotor_pos
+        return self._rotor_pos
 
     @property
     def notch_pos(self) -> int:
-        return self.__notch_pos
+        return self._notch_pos
 
     @property
     def ring_set(self) -> int:
-        return self.__ring_set
+        return self._ring_set
 
     @property
     def fwd_wiring(self) -> list[int]:
-        return self.__fwd_wiring
+        return self._fwd_wiring
 
     @property
     def backwd_wiring(self) -> list[int]:
-        return self.__backwd_wiring
+        return self._backwd_wiring
 
     @staticmethod
     def decode_wiring(enconding: str) -> list[int]:
@@ -137,13 +140,13 @@ class Rotor:
         return (mapping[(k + shift + 26) % 26] - shift + 26) % 26
 
     def forward(self, c: int) -> int:
-        return self.encipher(c, self.__rotor_pos, self.__ring_set, self.__fwd_wiring)
+        return self.encipher(c, self._rotor_pos, self._ring_set, self._fwd_wiring)
 
     def backward(self, c: int) -> int:
-        return self.encipher(c, self.__rotor_pos, self.__ring_set, self.__backwd_wiring)
+        return self.encipher(c, self._rotor_pos, self._ring_set, self._backwd_wiring)
 
     def is_at_notch(self) -> bool:
-        return self.__notch_pos == self.__rotor_pos
+        return self._notch_pos == self._rotor_pos
 
     def turnover(self) -> None:
-        self.__rotor_pos = (self.__rotor_pos + 1) % 26
+        self._rotor_pos = (self._rotor_pos + 1) % 26

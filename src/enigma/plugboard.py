@@ -1,6 +1,7 @@
 """
     Plugboard implementation
 """
+import re
 
 
 class Plugboard:
@@ -21,7 +22,7 @@ class Plugboard:
         if connections == '':
             return unplugged
 
-        pairs: list[str] = connections.split('[^a-zA-Z]')
+        pairs: list[str] = re.split(r'[^a-zA-Z]', connections)
 
         for p in pairs:
             c1: int = ord(p[0]) - 65
@@ -36,7 +37,7 @@ class Plugboard:
         if connections == '':
             return cls.identity_plugboard()
 
-        pairs: list[str] = connections.split('[^a-zA-Z]')
+        pairs: list[str] = re.split(r'[^a-zA-Z]', connections)
         plugged: set = set()
         mapping: list[int] = cls.identity_plugboard()
 

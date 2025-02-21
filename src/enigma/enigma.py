@@ -2,9 +2,9 @@
 Enigma implementation
 """
 
-from .rotor import Rotor
 from .plugboard import Plugboard
 from .reflector import Reflector
+from .rotor import Rotor
 
 
 class EnigmaKey:
@@ -128,25 +128,3 @@ class Enigma:
                 return self.__encrypt_str(value)
         else:
             raise TypeError("Unsupported type for encryption")
-
-    def __decrypt_int(self, c: int) -> int:
-        pass
-
-    def __decrypt_char(self, c: str) -> str:
-        if len(c) > 1:
-            raise ValueError("You must pass only one char")
-        pass
-
-    def __decrypt_str(self, s: str) -> str:
-        return "".join(self.__decrypt_char(c) for c in s)
-
-    def decrypt(self, value: int | str) -> int | str:
-        if isinstance(value, int):
-            return self.__decrypt_int(value)
-        elif isinstance(value, str):
-            if len(value) == 1:
-                return self.__decrypt_char(value)
-            else:
-                return self.__decrypt_str(value)
-        else:
-            raise TypeError("Unsupported type for decryption")

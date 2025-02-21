@@ -1,5 +1,5 @@
-import pytest
 import random
+
 from enigma import Enigma
 
 
@@ -60,7 +60,7 @@ def test_decrypt():
         assert input_text == plaintext
 
 
-def not_test_plugboard():
+def test_plugboard():
     # Simple test - 4 plugs
     e = Enigma(["I", "II", "III"], "B", [0, 0, 0], [0, 0, 0], "AC FG JY LW")
     input_text = "".join(["A"] * 50)
@@ -74,12 +74,10 @@ def not_test_plugboard():
     expected_output = "FYTIDQIBHDONUPAUVPNKILDHDJGCWFVMJUFNJSFYZTSPITBURMCJEEAMZAZIJMZAVFCTYTKYORHYDDSXHBLQWPJBMSSWIPSWLENZ"
     output = e.encrypt(input_text)
     assert expected_output == output
-
+    
     # 10 plugs
-    e = Enigma(
-        ["I", "II", "III"], "B", [0, 1, 20], [5, 5, 4], "AG HR YT KI FL WE NM SD OP QJ"
-    )
+    e = Enigma(["I", "II", "III"], "B", [0, 1, 20], [5, 5, 4], "AG HR YT KI FL WE NM SD OP QJ")
     input_text = "RNXYAZUYTFNQFMBOLNYNYBUYPMWJUQSBYRHPOIRKQSIKBKEKEAJUNNVGUQDODVFQZHASHMQIHSQXICTSJNAUVZYIHVBBARPJADRH"
     expected_output = "CFBJTPYXROYGGVTGBUTEBURBXNUZGGRALBNXIQHVBFWPLZQSCEZWTAWCKKPRSWOGNYXLCOTQAWDRRKBCADTKZGPWSTNYIJGLVIUQ"
     output = e.encrypt(input_text)
-    assert list(expected_output) == output
+    assert expected_output == output

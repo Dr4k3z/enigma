@@ -1,4 +1,3 @@
-import pytest
 from enigma import Rotor
 
 
@@ -20,13 +19,6 @@ def test_factory_creation():
         assert rotor.name == rotor_name
         assert len(rotor.fwd_wiring) == 26
         assert len(rotor.backwd_wiring) == 26
-
-
-def test_unimplemented_rotors():
-    # Test that unimplemented rotors raise NotImplementedError
-    for rotor_name in ["VI", "VII", "VIII"]:
-        with pytest.raises(NotImplementedError):
-            Rotor.create_rotor(rotor_name, 0, 0)
 
 
 def test_default_rotor():
