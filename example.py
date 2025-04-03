@@ -1,5 +1,4 @@
-from src.enigma import Enigma, EnigmaKey
-from src.enigma.fitness_fun import BigramFitness
+from enigma import Enigma, EnigmaKey
 
 
 def encrtpy():
@@ -15,10 +14,5 @@ def encrtpy():
     print(f"Plain: {res_decrypted}")
 
 
-def analysis():
-    bf = BigramFitness()
-    print(bf)
-
-
 if __name__ == "__main__":
-    analysis()
+    encrtpy()
